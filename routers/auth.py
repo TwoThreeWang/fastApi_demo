@@ -9,7 +9,7 @@ from jwt import PyJWTError
 from sql_app import cruds
 from pydantic import BaseModel
 from sql_app.schemas import schemas_user
-
+from cacheout import LFUCache
 
 router = APIRouter()
 
@@ -17,9 +17,11 @@ router = APIRouter()
 # openssl rand -hex 32
 SECRET_KEY = "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 3600 * 24 * 30
+ACCESS_TOKEN_EXPIRE_MINUTES = 3600 * 2
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/token")
+
+cache = LFUCache()  # 缓存
 
 
 # 生成 Token
@@ -52,6 +54,11 @@ async def get_current_user(db: Session = Depends(get_db), token: str = Depends(o
     user = cruds.get_user_by_email(db, email=token_data.email)
     if user is None:
         raise credentials_exception
+    # 限制每个用户每分钟接口调用频率
+    num = cache.get(token)
+    cache.set(token, num + 1 if num else 1, ttl=1 * 60)
+    if cache.get(token) > user.frequency_max:
+        raise HTTPException(status_code=429, detail="Too many requests")
     return user
 
 
