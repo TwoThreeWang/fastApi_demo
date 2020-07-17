@@ -1,3 +1,5 @@
+import time
+
 import uvicorn
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
@@ -26,7 +28,8 @@ app.add_middleware(
 
 @app.get("/")
 async def root():
-    return {"message": "Hello World"}
+    now = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
+    return {"message": f"Hello World! now is {now}"}
 
 
 if __name__ == "__main__":
