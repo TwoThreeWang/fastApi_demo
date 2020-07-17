@@ -15,6 +15,7 @@ class User(Base):
     hashed_password = Column(String)
     role = Column(String, default="general")
     is_active = Column(Boolean, default=True)
+    frequency_max = Column(Integer, default=600)
 
     todos = relationship("ToDo", back_populates="owner_todo")
 

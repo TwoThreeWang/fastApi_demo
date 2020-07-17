@@ -18,6 +18,7 @@ class User(UserBase):
     avatar: str = None
     role: str
     is_active: bool
+    frequency_max: int
 
     class Config:
         orm_mode = True
