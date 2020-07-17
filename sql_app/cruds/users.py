@@ -5,7 +5,7 @@ from ..schemas import schemas_user
 
 # 数据交互
 
-SECRET_KEY = "wtt"
+SECRET_KEY = "wangcheng"
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
@@ -66,7 +66,7 @@ def delete_user(db: Session, user_id: int):
 def update_user(db: Session, user: schemas_user.User):
     user = dict(user)
     uid = user.pop('id')
-    user.pop('email')
+    # user.pop('email')
     res = db.query(models.User).filter(models.User.id == uid).update(user)
     db.commit()
     return res
