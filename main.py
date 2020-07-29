@@ -5,12 +5,11 @@ from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 from sql_app import models
 from sql_app.database import engine
-from routers import auth, users, utils
+from routers import auth, users, utils, websocket
 
 # 建表
 models.Base.metadata.create_all(bind=engine)
-
-app = FastAPI()
+app = FastAPI(routes=websocket.routes)
 app.include_router(auth.router)
 app.include_router(users.router)
 app.include_router(utils.router)
