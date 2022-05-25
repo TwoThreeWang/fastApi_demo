@@ -7,5 +7,5 @@ requests==2.21.0
 namedlist==1.7
 PyExecJS==1.5.1
 fastapi==0.65.2
-PyJWT==1.7.1
+PyJWT==2.4.0
 bcrypt==3.1.7
